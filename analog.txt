@@ -1,0 +1,109 @@
+
+// konfigurasi port
+#define pJam 13
+#define pMenit 12
+#define interup 11
+
+// variabel waktu
+byte detik = 0;
+byte jam = 0;
+byte menit = 0;
+unsigned short ms = 0;
+
+int main(void) {
+  init(); // don't forget this!
+  {
+    pinMode(pJam, OUTPUT);
+    pinMode(pMenit, OUTPUT);
+    pinMode(interup, OUTPUT); 
+    attachInterrupt(0, detakJantung, CHANGE);
+    detik = 0;
+    ms = 0;
+    analogWrite(interup, 127);
+  }
+  while(1) {
+
+  } 
+}
+
+// fungsi eksekusi clock dari jantung
+void detakJantung() {
+  ms++;
+  if (ms == 489) {
+    ms = 0;
+    detik++;
+    if (detik > 60) detik = 0;
+    if(detik%2==0) digitalWrite(pJam, HIGH); 
+    else digitalWrite(pJam, LOW);
+
+    tampilMenit(detik);
+    tampilJam(detik);
+  } 
+}
+
+void tampilJam (byte jam) {
+  switch (jam) {
+  case 1 : 
+    jam = 0; 
+    break;
+  case 2 : 
+    jam = 13; 
+    break;
+  case 3 : 
+    jam = 25; 
+    break;
+  case 4 : 
+    jam = 38; 
+    break;
+  case 5 : 
+    jam = 48; 
+    break;
+  case 6 : 
+    jam = 60; 
+    break;
+  case 7 : 
+    jam = 75; 
+    break;
+  case 8 : 
+    jam = 90; 
+    break;
+  case 9 : 
+    jam = 110; 
+    break;
+  case 10 : 
+    jam = 130; 
+    break;
+  case 11 : 
+    jam = 160; 
+    break;
+  case 12 : 
+    jam = 200; 
+    break;
+  } 
+  analogWrite(pJam, jam);
+}
+
+void tampilMenit (byte menit) {
+
+  if(menit<=10) {
+    menit = menit*2.666;
+  } 
+  else if (menit <= 20){ 
+    menit = menit*2.222;
+  }
+  else if (menit <= 30){ 
+    menit = menit*2.467;
+  }
+  else if (menit <= 40){ 
+    menit = menit*2.75;
+  }
+  else if (menit <= 50){ 
+    menit = menit*3.0;
+  }
+  else if (menit <= 59){ 
+    menit = menit*3.389;
+  } 
+  analogWrite(pMenit, menit);
+}
+
+
